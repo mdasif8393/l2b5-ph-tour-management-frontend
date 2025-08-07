@@ -13,14 +13,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// make zod schema
+const formSchema = z.object({
+  name: z.string().min(3).max(50, {
+    message: "name must me at least 2 character and maximum 50 characters",
+  }),
+});
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const form = useForm();
+  const form = useForm<z.infer<typeof formSchema>>({
+    // resolve zod schema and set default values for inputs
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
   };
   return (
@@ -45,7 +60,7 @@ export function RegisterForm({
                   <FormControl>
                     <Input placeholder="Your Name" {...field} />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="sr-only">
                     This is your public display name.
                   </FormDescription>
                   <FormMessage />
