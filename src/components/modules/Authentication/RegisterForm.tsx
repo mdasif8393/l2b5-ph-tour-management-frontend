@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Link } from "react-router";
 import {
   Form,
@@ -15,27 +14,48 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Password from "@/components/ui/Password";
 
 // make zod schema
-const formSchema = z.object({
-  name: z.string().min(3).max(50, {
-    message: "name must me at least 2 character and maximum 50 characters",
-  }),
-});
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, {
+        error: "Name too short",
+      })
+      .max(50, {
+        error: "Name too long",
+      }),
+    email: z.email(),
+    password: z.string().min(8, {
+      error: "Password is too short",
+    }),
+    confirmPassword: z.string().min(8, {
+      error: "Confirm Password is too short",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password don't match",
+    path: ["confirmPassword"],
+  });
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof registerSchema>>({
     // resolve zod schema and set default values for inputs
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
     console.log(data);
   };
   return (
@@ -48,7 +68,7 @@ export function RegisterForm({
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -56,9 +76,67 @@ export function RegisterForm({
                 { field } // onChange onBlur inside field
               ) => (
                 <FormItem>
-                  <FormLabel>Your Name</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your Name" {...field} />
+                    <Input type="text" placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={(
+                { field } // onChange onBlur inside field
+              ) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="john.doe@company.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={(
+                { field } // onChange onBlur inside field
+              ) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Password {...field} />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={(
+                { field } // onChange onBlur inside field
+              ) => (
+                <FormItem>
+                  <FormLabel>Conform Password</FormLabel>
+                  <FormControl>
+                    <Password {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your public display name.
