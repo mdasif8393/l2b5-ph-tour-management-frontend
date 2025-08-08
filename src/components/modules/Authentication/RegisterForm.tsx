@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
+import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 
 // make zod schema
 const registerSchema = z
@@ -55,8 +56,22 @@ export function RegisterForm({
     },
   });
 
-  const onSubmit = (data: z.infer<typeof registerSchema>) => {
-    console.log(data);
+  // call rtk query api to post register
+  const [register] = useRegisterMutation();
+
+  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+    const userInfo = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
+
+    try {
+      const result = await register(userInfo).unwrap();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
