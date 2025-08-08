@@ -54,7 +54,7 @@ export function LoginForm({
     } catch (err) {
       if (err.status === 401) {
         toast.error("Your accounnt is not verified");
-        navigate("/verify");
+        navigate("/verify", { state: data.email });
       }
       console.log(err);
     }
