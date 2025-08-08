@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -16,6 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
 
 // make zod schema
 const registerSchema = z
@@ -45,6 +46,9 @@ export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [register] = useRegisterMutation();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof registerSchema>>({
     // resolve zod schema and set default values for inputs
     resolver: zodResolver(registerSchema),
@@ -57,7 +61,6 @@ export function RegisterForm({
   });
 
   // call rtk query api to post register
-  const [register] = useRegisterMutation();
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const userInfo = {
@@ -68,6 +71,10 @@ export function RegisterForm({
 
     try {
       const result = await register(userInfo).unwrap();
+      if (result) {
+        toast.success("User is created successfully");
+        navigate("/verify");
+      }
       console.log(result);
     } catch (error) {
       console.log(error);
