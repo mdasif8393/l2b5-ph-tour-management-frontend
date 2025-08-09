@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import { useState } from "react";
 
 // make zod schema
 const registerSchema = z
@@ -73,7 +74,7 @@ export function RegisterForm({
       const result = await register(userInfo).unwrap();
       if (result) {
         toast.success("User is created successfully");
-        navigate("/verify");
+        navigate("/verify", { state: data.email });
       }
       console.log(result);
     } catch (error) {
