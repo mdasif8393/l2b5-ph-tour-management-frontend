@@ -10,6 +10,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -51,12 +52,22 @@ export default function Verify() {
 
   const [verifyOtp] = useVerifyOtpMutation();
 
+  const [timer, setTimer] = useState(120);
+
   //! Needed. Turn of for development
   // useEffect(() => {
   //   if (!email) {
   //     navigate("/");
   //   }
   // }, [email, navigate]);
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      if (email && confirmed) {
+        setTimer((prev) => prev - 1);
+      }
+    }, 1000);
+  }, [email, confirmed]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -67,17 +78,16 @@ export default function Verify() {
 
   // send otp to email
   const handleConfirm = async () => {
-    const toastId = toast.loading("Sending OTP....");
-
-    try {
-      const res = await sendOtp({ email: email }).unwrap();
-      if (res.success) {
-        toast.success("OTP Sent. Check your email", { id: toastId });
-      }
-      setConfirmed(true);
-    } catch (err) {
-      console.log(err);
-    }
+    // const toastId = toast.loading("Sending OTP....");
+    setConfirmed(true);
+    // try {
+    //   const res = await sendOtp({ email: email }).unwrap();
+    //   if (res.success) {
+    //     toast.success("OTP Sent. Check your email", { id: toastId });
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   // verify otp get from email
@@ -146,7 +156,10 @@ export default function Verify() {
                           </InputOTPGroup>
                         </InputOTP>
                       </FormControl>
-
+                      <FormDescription>
+                        <Button variant="link">Resent OTP</Button>
+                        {timer}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -163,7 +176,7 @@ export default function Verify() {
       ) : (
         <Card className="max-w-sm w-[300px]">
           <CardHeader>
-            <CardTitle>Send OTP to your Email</CardTitle>
+            <CardTitle>Verify your email address</CardTitle>
             <CardDescription>We will send otp at {email}</CardDescription>
           </CardHeader>
           <CardFooter className="flex-col gap-2">

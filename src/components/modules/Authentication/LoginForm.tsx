@@ -47,16 +47,23 @@ export function LoginForm({
       password: data.password,
     };
     try {
-      const result = await login(userInfo).unwrap();
+      const res = await login(userInfo).unwrap();
       if (result) {
         console.log(result);
         toast.success("User logged in successfully");
       }
       console.log(result);
     } catch (err: any) {
-      if (err.status === 401) {
+      // if (err.status === 401) {
+      //   toast.error("Your account is not verified");
+      //   // navigate user to /verify page with user email
+      //   navigate("/verify", { state: data.email });
+      // }
+      if (err?.data?.message === "password does not match") {
+        toast.error("Invalid Credentials");
+      }
+      if (err?.data?.message === "User is not verified") {
         toast.error("Your account is not verified");
-        // navigate user to /verify page with user email
         navigate("/verify", { state: data.email });
       }
       console.log(err);
