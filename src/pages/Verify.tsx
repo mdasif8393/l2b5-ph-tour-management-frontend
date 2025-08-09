@@ -20,7 +20,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useSendOtpMutation } from "@/redux/features/auth/auth.api";
+import {
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dot } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -46,6 +49,8 @@ export default function Verify() {
 
   const [sendOtp] = useSendOtpMutation();
 
+  const [verifyOtp] = useVerifyOtpMutation();
+
   //! Needed. Turn of for development
   // useEffect(() => {
   //   if (!email) {
@@ -60,11 +65,14 @@ export default function Verify() {
     },
   });
 
+  // send otp to email
   const handleConfirm = async () => {
+    const toastId = toast.loading("Sending OTP....");
+
     try {
       const res = await sendOtp({ email: email }).unwrap();
       if (res.success) {
-        toast.success("OTP Sent");
+        toast.success("OTP Sent. Check your email", { id: toastId });
       }
       setConfirmed(true);
     } catch (err) {
@@ -72,16 +80,25 @@ export default function Verify() {
     }
   };
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  // verify otp get from email
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const toastId = toast.loading("Verifying OTP....");
+
+    const userInfo = {
+      email,
+      otp: data.pin,
+    };
+
+    try {
+      const res = await verifyOtp(userInfo).unwrap();
+      if (res.success) {
+        toast.success("OTP verified", { id: toastId });
+      }
+      setConfirmed(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="grid place-content-center h-screen">

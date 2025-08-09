@@ -49,6 +49,7 @@ export function LoginForm({
     try {
       const result = await login(userInfo).unwrap();
       if (result) {
+        console.log(result);
         toast.success("User logged in successfully");
       }
       console.log(result);
