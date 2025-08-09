@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,9 +52,10 @@ export function LoginForm({
         toast.success("User logged in successfully");
       }
       console.log(result);
-    } catch (err) {
+    } catch (err: any) {
       if (err.status === 401) {
-        toast.error("Your accounnt is not verified");
+        toast.error("Your account is not verified");
+        // navigate user to /verify page with user email
         navigate("/verify", { state: data.email });
       }
       console.log(err);
