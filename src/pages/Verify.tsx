@@ -21,6 +21,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import {
   useSendOtpMutation,
   useVerifyOtpMutation,
@@ -52,7 +53,7 @@ export default function Verify() {
 
   const [verifyOtp] = useVerifyOtpMutation();
 
-  const [timer, setTimer] = useState(120);
+  const [timer, setTimer] = useState(10);
 
   //! Needed. Turn of for development
   // useEffect(() => {
@@ -62,11 +63,15 @@ export default function Verify() {
   // }, [email, navigate]);
 
   useEffect(() => {
+    if (!email || !confirmed) {
+      return;
+    }
     const timerId = setInterval(() => {
       if (email && confirmed) {
-        setTimer((prev) => prev - 1);
+        setTimer((prev) => (prev > 0 ? prev - 1 : 0));
       }
     }, 1000);
+    return () => clearInterval(timerId);
   }, [email, confirmed]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -77,17 +82,19 @@ export default function Verify() {
   });
 
   // send otp to email
-  const handleConfirm = async () => {
-    // const toastId = toast.loading("Sending OTP....");
-    setConfirmed(true);
-    // try {
-    //   const res = await sendOtp({ email: email }).unwrap();
-    //   if (res.success) {
-    //     toast.success("OTP Sent. Check your email", { id: toastId });
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
+  const handleSendOtp = async () => {
+    const toastId = toast.loading("Sending OTP....");
+
+    try {
+      const res = await sendOtp({ email: email }).unwrap();
+      if (res.success) {
+        toast.success("OTP Sent. Check your email", { id: toastId });
+        setConfirmed(true);
+        setTimer(10);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // verify otp get from email
@@ -157,7 +164,20 @@ export default function Verify() {
                         </InputOTP>
                       </FormControl>
                       <FormDescription>
-                        <Button variant="link">Resent OTP</Button>
+                        <Button
+                          onClick={handleSendOtp}
+                          type="button"
+                          variant="link"
+                          disabled={timer !== 0}
+                          // normal class
+                          className={cn("p-0 m-0", {
+                            // conditional class
+                            "cursor-pointer": timer === 0,
+                            "text-gray-500": timer !== 0,
+                          })}
+                        >
+                          Resent OTP
+                        </Button>
                         {timer}
                       </FormDescription>
                       <FormMessage />
@@ -184,7 +204,7 @@ export default function Verify() {
               form="otp-form"
               type="submit"
               className="w-full"
-              onClick={handleConfirm}
+              onClick={handleSendOtp}
             >
               Confirm
             </Button>

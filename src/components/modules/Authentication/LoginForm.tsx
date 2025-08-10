@@ -48,11 +48,11 @@ export function LoginForm({
     };
     try {
       const res = await login(userInfo).unwrap();
-      if (result) {
-        console.log(result);
+      if (res) {
+        console.log(res);
         toast.success("User logged in successfully");
       }
-      console.log(result);
+      console.log(res);
     } catch (err: any) {
       // if (err.status === 401) {
       //   toast.error("Your account is not verified");
