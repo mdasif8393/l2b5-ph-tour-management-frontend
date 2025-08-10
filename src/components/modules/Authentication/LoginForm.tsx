@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import config from "@/config";
 
 const loginSchema = z.object({
   email: z.email(),
@@ -126,6 +127,18 @@ export function LoginForm({
             </Button>
           </form>
         </Form>
+        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <span className="bg-background text-muted-foreground relative z-10 px-2">
+            Or continue with
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
+        >
+          Login with Google
+        </Button>
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}

@@ -3,6 +3,11 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true,
+  // headers: {
+  //   Authorization:
+  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc3NWExYjBjOTIzY2UxZWY4ZTQ4ZjIiLCJlbWFpbCI6Im1kLmFzaWYuODM5M0BnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1NDgyMjYwOSwiZXhwIjoxNzU1Njg2NjA5fQ.CKSs1JW393cSC-lXDnnCgiSjOkUsSpyzme9gGbh9dU8",
+  // },
 });
 
 // Add a request interceptor
