@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/baseApi";
 import { IResponse, ISendOtp, IVerifyOtp } from "@/types";
 
@@ -16,6 +15,12 @@ const authApi = baseApi.injectEndpoints({
         url: "/auth/login",
         method: "POST",
         data: userInfo,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
       }),
     }),
     sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
@@ -47,4 +52,5 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useUserInfoQuery,
+  useLogoutMutation,
 } = authApi;
