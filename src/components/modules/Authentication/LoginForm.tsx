@@ -49,11 +49,8 @@ export function LoginForm({
     };
     try {
       const res = await login(userInfo).unwrap();
-      console.log(res);
-      if (res) {
-        toast.success("User logged in successfully");
-      }
       if (res.success) {
+        toast.success("User logged in successfully");
         navigate("/");
       }
     } catch (err: any) {
