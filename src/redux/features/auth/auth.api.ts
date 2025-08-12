@@ -9,6 +9,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["TOUR"],
     }),
     login: builder.mutation({
       query: (userInfo) => ({
@@ -16,12 +17,14 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["TOUR"],
     }),
     logout: builder.mutation({
       query: () => ({
         url: "/auth/logout",
         method: "POST",
       }),
+      invalidatesTags: ["TOUR"],
     }),
     sendOtp: builder.mutation<IResponse<null>, ISendOtp>({
       query: (userInfo) => ({
@@ -29,6 +32,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["TOUR"],
     }),
     verifyOtp: builder.mutation<IResponse<null>, IVerifyOtp>({
       query: (userInfo) => ({
@@ -36,12 +40,14 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["TOUR"],
     }),
     userInfo: builder.query({
       query: () => ({
         url: "/user/me",
         method: "GET",
       }),
+      providesTags: ["USER"],
     }),
   }),
 });
