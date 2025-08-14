@@ -27,7 +27,7 @@ export default function AddTourType() {
     try {
       const res = await removeTourType(tourId).unwrap();
       if (res.success) {
-        toast.success("", { id: toastId });
+        toast.success("Tour Type deleted successfully", { id: toastId });
       }
     } catch (err) {
       console.log(err);
