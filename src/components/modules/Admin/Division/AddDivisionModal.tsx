@@ -1,3 +1,4 @@
+import SingleImageUploader from "@/components/SingleImageUploader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -29,6 +31,9 @@ const divisionTypeSchema = z.object({
 
 export function AddDivisionModal() {
   // const [addTourType] = useAddTourTypeMutation();
+
+  const [image, setImage] = useState<File | null>(null);
+  console.log("Inside Add division modal", image);
 
   const form = useForm<z.infer<typeof divisionTypeSchema>>({
     resolver: zodResolver(divisionTypeSchema),
@@ -96,6 +101,7 @@ export function AddDivisionModal() {
               )}
             />
           </form>
+          <SingleImageUploader onChange={setImage} />
         </Form>
         <DialogFooter>
           <DialogClose asChild>
