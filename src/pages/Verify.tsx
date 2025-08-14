@@ -1,3 +1,4 @@
+// Send Otp to email and verify otp
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -43,8 +44,8 @@ const FormSchema = z.object({
 export default function Verify() {
   const navigate = useNavigate();
 
+  // get email from LoginForm page
   const location = useLocation();
-
   const [email] = useState(location.state);
 
   const [confirmed, setConfirmed] = useState(false);
@@ -53,19 +54,19 @@ export default function Verify() {
 
   const [verifyOtp] = useVerifyOtpMutation();
 
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(120);
 
-  //! Needed. Turn of for development
-  // useEffect(() => {
-  //   if (!email) {
-  //     navigate("/");
-  //   }
-  // }, [email, navigate]);
+  useEffect(() => {
+    if (!email) {
+      navigate("/");
+    }
+  }, [email, navigate]);
 
   useEffect(() => {
     if (!email || !confirmed) {
       return;
     }
+    // reduce timer
     const timerId = setInterval(() => {
       if (email && confirmed) {
         setTimer((prev) => (prev > 0 ? prev - 1 : 0));
@@ -90,14 +91,14 @@ export default function Verify() {
       if (res.success) {
         toast.success("OTP Sent. Check your email", { id: toastId });
         setConfirmed(true);
-        setTimer(10);
+        setTimer(120);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  // verify otp get from email
+  // verify otp which get from email
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const toastId = toast.loading("Verifying OTP....");
 

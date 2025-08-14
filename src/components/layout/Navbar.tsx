@@ -85,6 +85,7 @@ export default function Navbar() {
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
+                  {/* Show navbar dynamically based on user role */}
                   {navigationLinks.map((link, index) => (
                     <>
                       {link.role === "PUBLIC" && (

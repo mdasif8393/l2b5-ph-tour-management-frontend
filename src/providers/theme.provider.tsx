@@ -8,7 +8,7 @@ type ThemeProviderProps = {
   defaultTheme?: Theme;
   storageKey?: string;
 };
-
+// make dark theme
 export function ThemeProvider({
   children,
   defaultTheme = "system",

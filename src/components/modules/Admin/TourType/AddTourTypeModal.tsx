@@ -61,10 +61,10 @@ export function AddTourTypeModal() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tour Type Name</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Tour Type Name"
+                        placeholder="Name of Tour Type"
                         {...field}
                         value={field.value || ""}
                       />

@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
-import { useState } from "react";
 
 // make zod schema
 const registerSchema = z
@@ -38,6 +37,7 @@ const registerSchema = z
       error: "Confirm Password is too short",
     }),
   })
+  // using refine function check if password and confirm password do not match then show error
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password don't match",
     path: ["confirmPassword"],
@@ -60,8 +60,6 @@ export function RegisterForm({
       confirmPassword: "",
     },
   });
-
-  // call rtk query api to post register
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const userInfo = {
@@ -174,7 +172,7 @@ export function RegisterForm({
           </form>
         </Form>
 
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+        {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
           </span>
@@ -187,7 +185,7 @@ export function RegisterForm({
             />
           </svg>
           Login with GitHub
-        </Button>
+        </Button> */}
       </div>
       <div className="text-center text-sm">
         Already have an account?{" "}

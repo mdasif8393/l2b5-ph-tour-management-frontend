@@ -3,6 +3,7 @@ import { adminSidebarItems } from "@/routes/adminSidebarItems";
 import { userSidebarItems } from "@/routes/userSidebarItems";
 import { TRole } from "@/types";
 
+// make dynamic side bar data based on user role
 export const getSidebarItems = (userRole: TRole) => {
   switch (userRole) {
     case role.superAdmin:

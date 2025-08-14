@@ -27,17 +27,28 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     Component: withAuth(DashboardLayout, role.superAdmin as TRole),
-    //     children: [
-    //   {
-    //     path: "analytics",
-    //     Component: Analytics,
-    //   },
-    // ],
     children: [
       { index: true, element: <Navigate to="/admin/analytics" /> },
       ...generateRoutes(adminSidebarItems),
     ],
   },
+  /**
+     * Previous code of /admin
+    {
+    path: "/admin",
+    Component: DashboardLayout,
+    children: [
+      {
+        path: "analytics",
+        Component: Analytics,
+      },
+      {
+        path: "add-tour",
+        Component: AddTour,
+      },
+    ],
+  },
+     */
   {
     path: "/user",
     Component: withAuth(DashboardLayout, role.user as TRole),

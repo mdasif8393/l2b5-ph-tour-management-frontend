@@ -13,6 +13,7 @@ export function ModeToggle() {
   const { setTheme } = useTheme();
 
   return (
+    // Switch Theme button
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
