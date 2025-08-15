@@ -2,20 +2,20 @@ import { baseApi } from "@/redux/baseApi";
 
 export const divisionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // createDivision: builder.mutation({
-    //   query: (divisionInfo) => ({
-    //     url: "/division/create",
-    //     method: "POST",
-    //     data: divisionInfo,
-    //   }),
-    //   invalidatesTags: ["TOUR"],
-    // }),
     getDivision: builder.query({
       query: () => ({
         url: "/division",
         method: "GET",
       }),
       providesTags: ["DIVISION"],
+    }),
+    addDivision: builder.mutation({
+      query: (divisionData) => ({
+        url: "/division/create",
+        method: "POST",
+        data: divisionData,
+      }),
+      invalidatesTags: ["DIVISION"],
     }),
     deleteDivision: builder.mutation({
       query: (divisionId) => ({
@@ -27,4 +27,8 @@ export const divisionApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetDivisionQuery, useDeleteDivisionMutation } = divisionApi;
+export const {
+  useGetDivisionQuery,
+  useDeleteDivisionMutation,
+  useAddDivisionMutation,
+} = divisionApi;

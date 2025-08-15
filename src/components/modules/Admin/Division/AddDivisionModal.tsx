@@ -19,9 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useAddDivisionMutation } from "@/redux/features/division/division.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 const divisionTypeSchema = z.object({
@@ -31,10 +33,11 @@ const divisionTypeSchema = z.object({
 
 export function AddDivisionModal() {
   // const [addTourType] = useAddTourTypeMutation();
-
   const [image, setImage] = useState<File | null>(null);
-  console.log("Inside Add division modal", image);
 
+  const [addDivision] = useAddDivisionMutation();
+
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof divisionTypeSchema>>({
     resolver: zodResolver(divisionTypeSchema),
     defaultValues: {
@@ -43,16 +46,23 @@ export function AddDivisionModal() {
     },
   });
   const onSubmit = async (data: z.infer<typeof divisionTypeSchema>) => {
-    // const res = await addTourType({ name: data.name }).unwrap();
-    console.log(data);
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    formData.append("file", image as File);
 
-    // if (res.success) {
-    //   toast.success("Tour Type Added");
-    // }
+    try {
+      const res = await addDivision(formData).unwrap();
+      if (res.success) {
+        toast.success("Division added successfully");
+        setOpen(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Division</Button>
       </DialogTrigger>
