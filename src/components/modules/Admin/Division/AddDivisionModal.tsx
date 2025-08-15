@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-const divisionTypeSchema = z.object({
+const divisionSchema = z.object({
   name: z.string(),
   description: z.string(),
 });
@@ -38,14 +38,14 @@ export function AddDivisionModal() {
   const [addDivision] = useAddDivisionMutation();
 
   const [open, setOpen] = useState(false);
-  const form = useForm<z.infer<typeof divisionTypeSchema>>({
-    resolver: zodResolver(divisionTypeSchema),
+  const form = useForm<z.infer<typeof divisionSchema>>({
+    resolver: zodResolver(divisionSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
-  const onSubmit = async (data: z.infer<typeof divisionTypeSchema>) => {
+  const onSubmit = async (data: z.infer<typeof divisionSchema>) => {
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
     formData.append("file", image as File);
@@ -98,7 +98,7 @@ export function AddDivisionModal() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Division</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Description of Division"
@@ -117,7 +117,7 @@ export function AddDivisionModal() {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button type="submit" form="add-division">
+          <Button disabled={!image} type="submit" form="add-division">
             Save changes
           </Button>
         </DialogFooter>

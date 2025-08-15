@@ -33,8 +33,6 @@ export default function SingleImageUploader({ onChange }) {
     }
   }, [files, onChange]);
 
-  console.log("Inside image uploader", files);
-
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
