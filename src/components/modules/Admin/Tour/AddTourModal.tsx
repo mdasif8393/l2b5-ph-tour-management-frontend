@@ -37,12 +37,16 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useGetDivisionQuery } from "@/redux/features/division/division.api";
-import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
+import {
+  useAddTourMutation,
+  useGetTourTypesQuery,
+} from "@/redux/features/tour/tour.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 const tourSchema = z.object({
@@ -56,6 +60,8 @@ const tourSchema = z.object({
 
 export default function AddTourModal() {
   const [images, setImages] = useState<File[] | []>([]);
+
+  const [addTour] = useAddTourMutation();
 
   const form = useForm<any>({
     resolver: zodResolver(tourSchema),
@@ -91,15 +97,24 @@ export default function AddTourModal() {
     })
   );
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     const tourData = {
       ...data,
       startDate: formatISO(data.startDate),
       endDate: formatISO(data.endDate),
     };
     const formData = new FormData();
+    formData.append("data", JSON.stringify(tourData));
     images.forEach((image) => formData.append("files", image));
-    console.log(formData.get("files"));
+
+    try {
+      const res = await addTour(formData).unwrap();
+      if (res.success) {
+        toast.success("Tour added successfully");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
