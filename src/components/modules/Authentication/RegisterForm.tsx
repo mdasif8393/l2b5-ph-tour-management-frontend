@@ -30,6 +30,8 @@ const registerSchema = z
         error: "Name too long",
       }),
     email: z.email(),
+    address: z.string(),
+    phone: z.string(),
     password: z.string().min(8, {
       error: "Password is too short",
     }),
@@ -56,6 +58,8 @@ export function RegisterForm({
     defaultValues: {
       name: "",
       email: "",
+      address: "",
+      phone: "",
       password: "",
       confirmPassword: "",
     },
@@ -65,6 +69,8 @@ export function RegisterForm({
     const userInfo = {
       name: data.name,
       email: data.email,
+      address: data.address,
+      phone: data.phone,
       password: data.password,
     };
 
@@ -120,6 +126,46 @@ export function RegisterForm({
                     <Input
                       type="email"
                       placeholder="john.doe@company.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={(
+                { field } // onChange onBlur inside field
+              ) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="01777777777" {...field} />
+                  </FormControl>
+                  <FormDescription className="sr-only">
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={(
+                { field } // onChange onBlur inside field
+              ) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Holding No-1, Bashundhara, Dhaka"
                       {...field}
                     />
                   </FormControl>
