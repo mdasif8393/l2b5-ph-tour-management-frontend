@@ -15,6 +15,8 @@ import { TRole } from "@/types";
 import Tours from "@/components/modules/Tours";
 import TourDetails from "@/components/modules/TourDetails";
 import Booking from "@/components/modules/Booking";
+import Success from "@/pages/Payment/Success";
+import Fail from "@/pages/Payment/Fail";
 
 export const router = createBrowserRouter([
   {
@@ -34,7 +36,7 @@ export const router = createBrowserRouter([
         path: "tours/:id",
       },
       {
-        Component: Booking,
+        Component: withAuth(Booking),
         path: "booking/:id",
       },
     ],
@@ -89,7 +91,15 @@ export const router = createBrowserRouter([
     Component: Unauthorized,
   },
   {
-    path: "/tours",
-    Component: Tours,
+    path: "/payment/success",
+    Component: Success,
+  },
+  {
+    path: "/payment/fail",
+    Component: Fail,
+  },
+  {
+    path: "/payment/cancel",
+    Component: Fail,
   },
 ]);
