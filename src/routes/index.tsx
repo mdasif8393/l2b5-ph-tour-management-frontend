@@ -17,6 +17,7 @@ import TourDetails from "@/components/modules/TourDetails";
 import Booking from "@/components/modules/Booking";
 import Success from "@/pages/Payment/Success";
 import Fail from "@/pages/Payment/Fail";
+import Cancel from "@/pages/Payment/Cancel";
 
 export const router = createBrowserRouter([
   {
@@ -100,6 +101,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/payment/cancel",
-    Component: Fail,
+    Component: Cancel,
   },
 ]);
