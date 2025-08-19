@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -39,6 +38,7 @@ import { toast } from "sonner";
 export default function AddTourType() {
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
+
   const [limit, setLimit] = useState(10);
 
   const handleLimit = (value: string) => {
@@ -46,6 +46,9 @@ export default function AddTourType() {
   };
 
   const { data } = useGetTourTypesQuery({ page: currentPage, limit });
+
+  // total page need for pagination
+  const totalPage = data?.meta?.totalPage || 1;
 
   const [removeTourType] = useRemoveTourTypeMutation();
 
@@ -102,31 +105,43 @@ export default function AddTourType() {
               <PaginationItem>
                 <PaginationPrevious
                   onClick={() => setCurrentPage((prev) => prev - 1)}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
-              <PaginationItem>
-                <PaginationLink>1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink isActive>2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink>3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
+              {Array.from({ length: totalPage }, (_, index) => index + 1).map(
+                (page) => (
+                  <PaginationItem
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className="cursor-pointer"
+                  >
+                    <PaginationLink isActive={page === currentPage}>
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
               <PaginationItem>
                 <PaginationNext
                   onClick={() => setCurrentPage((prev) => prev + 1)}
+                  className={
+                    currentPage === totalPage
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
         </div>
+
         <Select onValueChange={handleLimit}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select limit" />
+            <SelectValue placeholder="Select Page Limit" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
