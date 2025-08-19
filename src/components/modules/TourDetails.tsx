@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { useGetTourQuery } from "@/redux/features/tour/tour.api";
+import {
+  useGetTourQuery,
+  useGetTourTypesQuery,
+} from "@/redux/features/tour/tour.api";
 
 import { format } from "date-fns";
 import { Link, useParams } from "react-router";
@@ -7,6 +10,16 @@ import { Link, useParams } from "react-router";
 export default function TourDetails() {
   const { id } = useParams();
   const { data } = useGetTourQuery({ _id: id });
+
+  const { data: tourTypeData } = useGetTourTypesQuery(
+    {
+      _id: data?.data[0].tourType,
+    },
+    {
+      skip: !data,
+    }
+  );
+
   const tourData = data?.data[0];
   return (
     <div className="container mx-auto p-6">
@@ -51,11 +64,6 @@ export default function TourDetails() {
                   tourData?.startDate ? tourData?.startDate : new Date()
                 ),
                 "PP"
-              )}{" "}
-              -{" "}
-              {format(
-                new Date(tourData?.endDate ? tourData?.endDate : new Date()),
-                "PP"
               )}
             </p>
             <p>
@@ -66,7 +74,7 @@ export default function TourDetails() {
             </p>
             <p>{/* <strong>Division:</strong> {divisionData?.[0]?.name} */}</p>
             <p>
-              <strong>Tour Type:</strong> {tourData?.tourType}
+              <strong>Tour Type:</strong> {tourTypeData?.name}
             </p>
             <p>
               <strong>Min Age:</strong> {tourData?.minAge} years
