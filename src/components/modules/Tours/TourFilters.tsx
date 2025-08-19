@@ -14,6 +14,7 @@ import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { useSearchParams } from "react-router";
 
 export default function TourFilters() {
+  // make division and tour type options for select
   const { data: divisionData, isLoading: divisionLoading } =
     useGetDivisionQuery(undefined);
 
@@ -34,6 +35,7 @@ export default function TourFilters() {
     })
   );
 
+  // set selected division and tourType _id to url
   const [searchParams, setSearchParams] = useSearchParams();
 
   const selectedDivision = searchParams.get("division") || undefined;
