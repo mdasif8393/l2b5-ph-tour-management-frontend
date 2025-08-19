@@ -2,6 +2,24 @@ import DeleteConfirmation from "@/components/DeleteConfirmation";
 import { AddTourTypeModal } from "@/components/modules/Admin/TourType/AddTourTypeModal";
 import { Button } from "@/components/ui/button";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCaption,
@@ -15,10 +33,19 @@ import {
   useRemoveTourTypeMutation,
 } from "@/redux/features/tour/tour.api";
 import { Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function AddTourType() {
-  const { data } = useGetTourTypesQuery(undefined);
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const handleLimit = (value: string) => {
+    setLimit(Number(value));
+  };
+
+  const { data } = useGetTourTypesQuery({ page: currentPage, limit });
 
   const [removeTourType] = useRemoveTourTypeMutation();
 
@@ -66,6 +93,50 @@ export default function AddTourType() {
             ))}
           </TableBody>
         </Table>
+      </div>
+      {/** Pagination */}
+      <div className="flex justify-end mt-2">
+        <div>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink>1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink isActive>2</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink>3</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+        <Select onValueChange={handleLimit}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select limit" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Fruits</SelectLabel>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="15">15</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
