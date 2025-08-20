@@ -1,5 +1,5 @@
 import config from "@/config";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
@@ -24,17 +24,75 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+
+// temporary storage where store request come inside isRefreshing time
+let pendingQueue: {
+  resolve: (value: unknown) => void;
+  reject: (value: unknown) => void;
+}[] = [];
+
+// resolve or reject all pendingQueue
+const processQueue = (error: unknown) => {
+  pendingQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(null);
+    }
+  });
+
+  // empty after all resolve and reject
+  pendingQueue = [];
+};
+
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
-  function onFulfilled(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    // console.log("Axio", response);
+  // return response if all ok
+  (response) => {
     return response;
   },
-  function onRejected(error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+  // if error found then go inside it
+  async (error) => {
+    // failed request come from axios like /auth/me store in originalRequest
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry: boolean;
+    };
+
+    if (
+      error.response.status === 500 &&
+      error.response.data.message === "jwt expired" &&
+      !originalRequest._retry
+    ) {
+      console.log("Your token is expired");
+
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          pendingQueue.push({ resolve, reject });
+        })
+          .then(() => axiosInstance(originalRequest))
+          .catch((error) => Promise.reject(error));
+      }
+
+      isRefreshing = true;
+      try {
+        const res = await axiosInstance.post("/auth/refresh-token");
+        console.log("New Token arrived", res);
+
+        processQueue(null);
+
+        return axiosInstance(originalRequest);
+      } catch (error) {
+        processQueue(error);
+        return Promise.reject(error);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    //* For Everything
     return Promise.reject(error);
   }
 );
